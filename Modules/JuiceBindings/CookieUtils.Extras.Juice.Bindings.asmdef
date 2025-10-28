@@ -1,0 +1,17 @@
+{
+    "name": "CookieUtils.Extras.Juice.Bindings",
+    "rootNamespace": "CookieUtils.Extras.Juice.Bindings",
+    "references": [
+        "CookieUtils.Extras.Juice",
+        "CookieUtils.HealthSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

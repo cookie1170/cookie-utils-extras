@@ -1,0 +1,23 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/CookieUtilsPackage/CookieUtils/Editor/CookieUtilsInspector.uss?fileID=7433441132597879392&amp;guid=d8f391a57a615e7fba248f2eab09974a&amp;type=3#CookieUtilsInspector" />
+    <ui:Button text="Preview" name="Preview" tooltip="Preview the animation. Only available in play mode" class="title" style="height: 40px; margin-right: 32px; margin-left: 32px;" />
+    <ui:VisualElement name="DataObjectInspectorPanel" class="data-inspector" style="flex-grow: 1;">
+        <ui:Foldout text="SamplePlayer_EffectData" name="DataTitle" view-data-key="DataTitle" class="title" style="font-size: 16px; margin-left: 16px;">
+            <ui:VisualElement name="DataInspector" style="flex-grow: 1;" />
+        </ui:Foldout>
+    </ui:VisualElement>
+    <ui:VisualElement name="DataPanel" class="panel" style="flex-grow: 1;">
+        <ui:Foldout text="Data&#10;" name="Data" view-data-key="Data" class="title">
+            <uie:PropertyField name="DataObject" binding-path="data" label="Data object" />
+            <ui:Button text="Create data object" name="CreateDataObject" class="title" style="height: 40px; margin-top: 8px; margin-right: 8px; margin-bottom: 8px; margin-left: 8px;" />
+        </ui:Foldout>
+    </ui:VisualElement>
+    <ui:VisualElement name="OverridesPanel" class="panel" style="flex-grow: 1;">
+        <ui:Foldout text="Overrides" name="Overrides" view-data-key="Overrides" class="title">
+            <uie:PropertyField name="OverrideRenderer" binding-path="overrideRenderers" label="Override renders" />
+            <uie:PropertyField name="RendererOverride" binding-path="rendererOverrides" label="Render overrides" />
+            <uie:PropertyField name="OverrideMaterial" binding-path="overrideMaterial" label="Override material" />
+            <uie:PropertyField name="MaterialOverride" binding-path="materialOverride" label="Material override" />
+        </ui:Foldout>
+    </ui:VisualElement>
+</ui:UXML>
