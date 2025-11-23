@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48a0b40747764703a0d9d1c0573c46d8, type: 3}
+  m_Name: HurtEffect
+  m_EditorClassIdentifier: Assembly-CSharp::HurtEffect
+  particleDelay: 0
+  particlePrefab: {fileID: 3705006953531701402, guid: 9d00e71de10de0fe6ba8e1494e333e4a, type: 3}
+  scaleShake:
+    strength: {x: 1.25, y: 1.25, z: 1}
+    duration: 0.25
+    frequency: 2
+    enableFalloff: 1
+    falloffEase: 0
+    strengthOverTime:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    asymmetry: 0
+    easeBetweenShakes: 4
+    cycles: 1
+    startDelay: 0
+    endDelay: 0
+    useUnscaledTime: 0
+    _useFixedUpdate: 0
+    _updateType: 0
+  rotationShake:
+    strength: {x: 0, y: 0, z: 20}
+    duration: 0.25
+    frequency: 10
+    enableFalloff: 1
+    falloffEase: 0
+    strengthOverTime:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    asymmetry: 0
+    easeBetweenShakes: 7
+    cycles: 1
+    startDelay: 0
+    endDelay: 0
+    useUnscaledTime: 0
+    _useFixedUpdate: 0
+    _updateType: 0
+  flashInSettings:
+    startFromCurrent: 1
+    startValue: 0
+    endValue: 0.9
+    settings:
+      duration: 0.1
+      ease: 3
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0.1
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  flashOutSettings:
+    startFromCurrent: 1
+    startValue: 0.9
+    endValue: 0
+    settings:
+      duration: 0.15
+      ease: 2
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0

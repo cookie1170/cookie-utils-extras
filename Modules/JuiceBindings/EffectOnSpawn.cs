@@ -1,6 +1,6 @@
 namespace CookieUtils.Extras.Juice.Bindings
 {
-    public class EffectOnSpawn : Effect
+    public class EffectOnSpawn : EffectPlayer
     {
         protected override void Awake() { }
 
