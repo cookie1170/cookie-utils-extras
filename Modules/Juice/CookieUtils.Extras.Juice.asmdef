@@ -1,21 +1,21 @@
 {
-    "name": "CookieUtils.Extras.Juice",
-    "rootNamespace": "CookieUtils.Extras.Juice",
-    "references": [
-        "Unity.Cinemachine",
-        "PrimeTween.Runtime",
-        "CookieUtils.Base",
-        "CookieUtils.ObjectPooling",
-        "CookieUtils.Audio",
-        "CookieUtils.Extras.SceneManager"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "CookieUtils.Extras.Juice",
+  "rootNamespace": "CookieUtils.Extras.Juice",
+  "references": [
+    "Unity.Cinemachine",
+    "PrimeTween.Runtime",
+    "CookieUtils.Base",
+    "CookieUtils.ObjectPooling",
+    "CookieUtils.Audio",
+    "CookieUtils.Extras.SceneManager"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

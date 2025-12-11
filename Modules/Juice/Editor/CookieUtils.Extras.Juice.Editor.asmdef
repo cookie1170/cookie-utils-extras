@@ -1,20 +1,20 @@
 {
-    "name": "CookieUtils.Extras.Juice.Editor",
-    "rootNamespace": "CookieUtils.Extras.Juice.Editor",
-    "references": [
-        "CookieUtils.Extras.Juice",
-        "PrimeTween.Runtime",
-        "Unity.Cinemachine"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "CookieUtils.Extras.Juice.Editor",
+  "rootNamespace": "CookieUtils.Extras.Juice.Editor",
+  "references": [
+    "CookieUtils.Extras.Juice",
+    "PrimeTween.Runtime",
+    "Unity.Cinemachine"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

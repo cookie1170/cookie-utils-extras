@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eflatun.SceneReference;
-using IngameDebugConsole;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+#if DEBUG_CONSOLE
+using IngameDebugConsole;
+#endif
 
 namespace CookieUtils.Extras.SceneManager
 {
@@ -45,11 +47,8 @@ namespace CookieUtils.Extras.SceneManager
         }
 
         private static void FindSceneTransition() {
-            var
-                transition =
-                    Object.FindFirstObjectByType<SceneTransition>(
-                        FindObjectsInactive.Include
-                    ); // ugly but only called once so should be fine
+            // ugly but only called once so should be fine
+            var transition = Object.FindFirstObjectByType<SceneTransition>(FindObjectsInactive.Include);
 
             if (!transition) return;
 

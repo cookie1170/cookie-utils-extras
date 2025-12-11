@@ -1,19 +1,19 @@
 {
-    "name": "CookieUtils.Extras.Juice.Bindings.Editor",
-    "rootNamespace": "CookieUtils.Extras.Juice.Bindings.Editor",
-    "references": [
-        "CookieUtils.Extras.Juice.Editor",
-        "CookieUtils.Extras.Juice.Bindings"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "CookieUtils.Extras.Juice.Bindings.Editor",
+  "rootNamespace": "CookieUtils.Extras.Juice.Bindings.Editor",
+  "references": [
+    "CookieUtils.Extras.Juice.Editor",
+    "CookieUtils.Extras.Juice.Bindings"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
