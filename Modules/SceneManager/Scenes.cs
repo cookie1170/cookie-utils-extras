@@ -83,7 +83,7 @@ namespace CookieUtils.Extras.SceneManager
                 return;
             }
 
-            if (_transition && useTransition) await _transition.PlayForwards();
+            if (_transition && useTransition) await PlayTransitionForwards();
             if (ActiveGroup != null) await UnloadSceneGroup(ActiveGroup, targetGroup);
 
             ActiveGroup = targetGroup;
@@ -113,8 +113,12 @@ namespace CookieUtils.Extras.SceneManager
             Debug.Log($"[CookieUtils.Extras.SceneManager] Loaded group {targetGroup.name}");
             OnGroupLoaded(targetGroup);
 
-            if (_transition && useTransition) _ = _transition.PlayBackwards();
+            if (_transition && useTransition) _ = PlayTransitionBackwards();
         }
+
+        public static Task PlayTransitionBackwards() => _transition.PlayBackwards();
+
+        public static Task PlayTransitionForwards() => _transition.PlayForwards();
 
         public static async Task UnloadSceneGroup(SceneGroup group, SceneGroup newGroup = null) {
             if (!_settings.useSceneManager) {
