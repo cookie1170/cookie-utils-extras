@@ -4,8 +4,10 @@ namespace CookieUtils.Extras.Juice.Bindings
     {
         protected override void Awake() { }
 
-        private void OnEnable() {
-            if (!didStart) Initialize();
+        private void OnEnable()
+        {
+            if (!didStart)
+                Initialize();
 
             Play();
         }

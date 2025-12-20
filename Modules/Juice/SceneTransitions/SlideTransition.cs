@@ -7,13 +7,17 @@ namespace CookieUtils.Extras.Juice
 {
     public class SlideTransition : FullscreenTransition
     {
-        [SerializeField] private SlideAxis axis;
+        [SerializeField]
+        private SlideAxis axis;
 
-        [SerializeField] private TweenSettings<float> inSettings = new() {
+        [SerializeField]
+        private TweenSettings<float> inSettings = new()
+        {
             startFromCurrent = false,
             startValue = -2200f,
             endValue = 0f,
-            settings = new TweenSettings {
+            settings = new TweenSettings
+            {
                 useUnscaledTime = true,
                 duration = 0.5f,
                 endDelay = 0.25f,
@@ -21,11 +25,14 @@ namespace CookieUtils.Extras.Juice
             },
         };
 
-        [SerializeField] private TweenSettings<float> outSettings = new() {
+        [SerializeField]
+        private TweenSettings<float> outSettings = new()
+        {
             startFromCurrent = true,
             startValue = 0f,
             endValue = -2200f,
-            settings = new TweenSettings {
+            settings = new TweenSettings
+            {
                 useUnscaledTime = true,
                 duration = 0.5f,
                 endDelay = 0.25f,
@@ -33,10 +40,12 @@ namespace CookieUtils.Extras.Juice
             },
         };
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
             Vector3 position = screen.rectTransform.localPosition;
-            switch (axis) {
+            switch (axis)
+            {
                 case SlideAxis.X:
                     position.x = outSettings.endValue;
 
@@ -53,21 +62,26 @@ namespace CookieUtils.Extras.Juice
             screen.enabled = false;
         }
 
-        public override async Task PlayForwards() {
+        public override async Task PlayForwards()
+        {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
             screen.enabled = true;
-            switch (axis) {
-                case SlideAxis.X: {
+            switch (axis)
+            {
+                case SlideAxis.X:
+                {
                     await Tween.LocalPositionX(screen.rectTransform, inSettings);
 
                     break;
                 }
-                case SlideAxis.Y: {
+                case SlideAxis.Y:
+                {
                     await Tween.LocalPositionY(screen.rectTransform, inSettings);
 
                     break;
                 }
-                default: {
+                default:
+                {
                     throw new ArgumentOutOfRangeException();
                 }
             }
@@ -75,20 +89,25 @@ namespace CookieUtils.Extras.Juice
             PrimeTweenConfig.warnEndValueEqualsCurrent = true;
         }
 
-        public override async Task PlayBackwards() {
+        public override async Task PlayBackwards()
+        {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
-            switch (axis) {
-                case SlideAxis.X: {
+            switch (axis)
+            {
+                case SlideAxis.X:
+                {
                     await Tween.LocalPositionX(screen.rectTransform, outSettings);
 
                     break;
                 }
-                case SlideAxis.Y: {
+                case SlideAxis.Y:
+                {
                     await Tween.LocalPositionY(screen.rectTransform, outSettings);
 
                     break;
                 }
-                default: {
+                default:
+                {
                     throw new ArgumentOutOfRangeException();
                 }
             }

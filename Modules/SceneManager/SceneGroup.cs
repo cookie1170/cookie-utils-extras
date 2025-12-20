@@ -8,9 +8,9 @@ using UnityEngine;
 namespace CookieUtils.Extras.SceneManager
 {
     [Serializable]
-    #if ALCHEMY
+#if ALCHEMY
     [DisableAlchemyEditor]
-    #endif
+#endif
     public class SceneGroup
     {
         public string name;
@@ -18,9 +18,9 @@ namespace CookieUtils.Extras.SceneManager
     }
 
     [Serializable]
-    #if ALCHEMY
+#if ALCHEMY
     [DisableAlchemyEditor]
-    #endif
+#endif
     public class SceneGroupReference
     {
         public string name;
@@ -28,9 +28,9 @@ namespace CookieUtils.Extras.SceneManager
     }
 
     [Serializable]
-    #if ALCHEMY
+#if ALCHEMY
     [DisableAlchemyEditor]
-    #endif
+#endif
     public class SceneData
     {
         public SceneReference scene;

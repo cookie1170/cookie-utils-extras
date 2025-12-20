@@ -12,25 +12,30 @@ namespace CookieUtils.Extras.Juice
         private static readonly int ProgressID = Shader.PropertyToID("_Progress");
         private static readonly int ColorID = Shader.PropertyToID("_Color");
 
-        [Tooltip("The effect object to play")] public Effect effect;
+        [Tooltip("The effect object to play")]
+        public Effect effect;
 
         [Tooltip("Whether to override the renderers")]
         public bool overrideRenderers = false;
 
-        [Tooltip("The renderer overrides")] public Renderer[] rendererOverrides;
+        [Tooltip("The renderer overrides")]
+        public Renderer[] rendererOverrides;
 
         private Transform _cam;
         private Renderer[] _renderers;
 
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             Initialize();
         }
 
-        protected virtual void Initialize() {
+        protected virtual void Initialize()
+        {
             Camera mainCam = Camera.main;
             _cam = mainCam?.transform;
 
-            if (!effect) {
+            if (!effect)
+            {
                 Debug.LogError(
                     $"{(transform.parent ? transform.parent.name : name)}'s EffectPlayer has no data object!"
                 );
@@ -45,29 +50,37 @@ namespace CookieUtils.Extras.Juice
                 _renderers = GetComponentsInChildren<Renderer>();
         }
 
-        public virtual async Task Play() {
-            if (!_cam) _cam = Camera.main?.transform;
+        public virtual async Task Play()
+        {
+            if (!_cam)
+                _cam = Camera.main?.transform;
 
-            if (_cam) {
+            if (_cam)
+            {
                 Vector3 difference = transform.position - _cam.position;
-                if (effect.Is2D) difference.z = 0;
-
+                if (effect.Is2D)
+                    difference.z = 0;
 
                 Vector3 direction = difference.normalized;
 
-                if (direction.sqrMagnitude < 0.05f * 0.05f) direction = Vector3.right;
+                if (direction.sqrMagnitude < 0.05f * 0.05f)
+                    direction = Vector3.right;
 
                 await Play(direction);
-            } else {
+            }
+            else
+            {
                 await Play(Vector3.right);
             }
         }
 
-        public async Task Play(Vector3 direction) {
+        public async Task Play(Vector3 direction)
+        {
             await Play(direction, transform.position);
         }
 
-        public async Task Play(Vector3 direction, Vector3 contactPoint) {
+        public async Task Play(Vector3 direction, Vector3 contactPoint)
+        {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
 
             await effect.Play(_renderers, gameObject, direction, contactPoint);

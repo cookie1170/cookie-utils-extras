@@ -8,9 +8,11 @@ namespace CookieUtils.Extras.Juice.Editor
     [CustomEditor(typeof(EffectPlayer))]
     public class EffectPlayerEditor : UnityEditor.Editor
     {
-        [SerializeField] private VisualTreeAsset inspector;
+        [SerializeField]
+        private VisualTreeAsset inspector;
 
-        public override VisualElement CreateInspectorGUI() {
+        public override VisualElement CreateInspectorGUI()
+        {
             VisualElement root = new();
 
             inspector.CloneTree(root);
@@ -33,24 +35,31 @@ namespace CookieUtils.Extras.Juice.Editor
             dataObject.RegisterValueChangeCallback(_ => CheckDataObject());
 
             overrideRenderer.RegisterValueChangeCallback(_ =>
-                rendererOverride.style.display = player.overrideRenderers ? DisplayStyle.Flex : DisplayStyle.None
+                rendererOverride.style.display = player.overrideRenderers
+                    ? DisplayStyle.Flex
+                    : DisplayStyle.None
             );
 
             return root;
 
-            void CheckDataObject() {
-                var dataInspectorCurrent = dataObjectInspectorPanel.Q<VisualElement>("DataInspector");
-                if (dataInspectorCurrent != null) dataTitle.Remove(dataInspectorCurrent);
+            void CheckDataObject()
+            {
+                var dataInspectorCurrent = dataObjectInspectorPanel.Q<VisualElement>(
+                    "DataInspector"
+                );
+                if (dataInspectorCurrent != null)
+                    dataTitle.Remove(dataInspectorCurrent);
 
-                if (player.effect) {
-                    InspectorElement dataInspector = new(player.effect) {
-                        name = "DataInspector",
-                    };
+                if (player.effect)
+                {
+                    InspectorElement dataInspector = new(player.effect) { name = "DataInspector" };
 
                     dataObjectInspectorPanel.style.display = DisplayStyle.Flex;
                     dataTitle.Add(dataInspector);
                     dataTitle.text = player.effect.name;
-                } else {
+                }
+                else
+                {
                     dataObjectInspectorPanel.style.display = DisplayStyle.None;
                 }
             }

@@ -6,10 +6,13 @@ namespace CookieUtils.Extras.Juice
 {
     public class FadeTransition : FullscreenTransition
     {
-        [SerializeField] private TweenSettings<float> inSettings = new() {
+        [SerializeField]
+        private TweenSettings<float> inSettings = new()
+        {
             endValue = 1,
             startFromCurrent = true,
-            settings = new TweenSettings {
+            settings = new TweenSettings
+            {
                 duration = 0.5f,
                 endDelay = 0.25f,
                 ease = Ease.InQuad,
@@ -17,17 +20,21 @@ namespace CookieUtils.Extras.Juice
             },
         };
 
-        [SerializeField] private TweenSettings<float> outSettings = new() {
+        [SerializeField]
+        private TweenSettings<float> outSettings = new()
+        {
             endValue = 0,
             startFromCurrent = true,
-            settings = new TweenSettings {
+            settings = new TweenSettings
+            {
                 duration = 0.5f,
                 ease = Ease.OutQuad,
                 useUnscaledTime = true,
             },
         };
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
             Color color = screen.color;
             color.a = 0;
@@ -35,14 +42,16 @@ namespace CookieUtils.Extras.Juice
             screen.enabled = false;
         }
 
-        public override async Task PlayForwards() {
+        public override async Task PlayForwards()
+        {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
             screen.enabled = true;
             await Tween.Alpha(screen, inSettings);
             PrimeTweenConfig.warnEndValueEqualsCurrent = true;
         }
 
-        public override async Task PlayBackwards() {
+        public override async Task PlayBackwards()
+        {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
             await Tween.Alpha(screen, outSettings);
             screen.enabled = false;

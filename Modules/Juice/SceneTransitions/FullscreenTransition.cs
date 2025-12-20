@@ -6,10 +6,13 @@ namespace CookieUtils.Extras.Juice
 {
     public abstract class FullscreenTransition : SceneTransition
     {
-        [SerializeField] protected Graphic screen;
+        [SerializeField]
+        protected Graphic screen;
 
-        protected virtual void Awake() {
-            if (!screen) screen = GetComponentInChildren<Graphic>();
+        protected virtual void Awake()
+        {
+            if (!screen)
+                screen = GetComponentInChildren<Graphic>();
         }
     }
 }
