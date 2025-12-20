@@ -1,6 +1,6 @@
 {
   "name": "com.cookie.cookieutils-extras",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "displayName": "Cookie Utils Extras",
   "description": "Extra classes for the package Cookie Utils with extra dependencies, see github repo",
   "unity": "6000.2",
