@@ -9,6 +9,9 @@ using Object = UnityEngine.Object;
 #if DEBUG_CONSOLE
 using IngameDebugConsole;
 #endif
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace CookieUtils.Extras.SceneManager
 {
@@ -19,13 +22,13 @@ namespace CookieUtils.Extras.SceneManager
         private static SceneTransition _transition;
 
         public static SceneGroup ActiveGroup { get; private set; }
-        public static event Action<SceneGroup> OnGroupLoaded = delegate { };
+        public static event Action<SceneGroup> GroupLoaded = delegate { };
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static async void Initialize()
         {
+            ActiveGroup = null;
             _transition = null;
-
             _settings = ScenesSettings.Get();
 
             if (!_settings.useSceneManager)
@@ -45,12 +48,28 @@ namespace CookieUtils.Extras.SceneManager
 
             if (_settings.startingGroup.Group != null)
                 await LoadGroup(_settings.startingGroup, false);
+
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+
+            static void OnPlayModeStateChanged(PlayModeStateChange change)
+            {
+                if (change == PlayModeStateChange.ExitingPlayMode)
+                {
+                    ActiveGroup = null;
+                    _transition = null;
+                    _settings = null;
+                    GroupLoaded = null;
+                }
+            }
+#endif
         }
 
         private static async Task LoadBootstrapScene()
         {
             await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(
-                _settings.bootstrapScene.BuildIndex
+                _settings.bootstrapScene.Name
             );
             Debug.Log("[CookieUtils.Extras.SceneManager] Loaded bootstrap scene");
         }
@@ -58,7 +77,7 @@ namespace CookieUtils.Extras.SceneManager
         private static void FindSceneTransition()
         {
             // ugly but only called once so should be fine
-            var transition = Object.FindFirstObjectByType<SceneTransition>(
+            var transition = Object.FindAnyObjectByType<SceneTransition>(
                 FindObjectsInactive.Include
             );
 
@@ -113,17 +132,16 @@ namespace CookieUtils.Extras.SceneManager
 
             foreach (SceneData scene in targetGroup.scenes)
             {
-                int buildIndex = scene.scene.BuildIndex;
+                if (scene == null)
+                    continue;
 
-                if (
-                    UnityEngine
-                        .SceneManagement.SceneManager.GetSceneByBuildIndex(buildIndex)
-                        .isLoaded
-                )
+                string path = scene.scene.Path;
+
+                if (UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path).isLoaded)
                     continue;
 
                 AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(
-                    buildIndex,
+                    scene.scene.Name,
                     LoadSceneMode.Additive
                 );
 
@@ -133,9 +151,7 @@ namespace CookieUtils.Extras.SceneManager
                 if (scene.type == SceneType.Active)
                     operation.completed += _ =>
                         UnityEngine.SceneManagement.SceneManager.SetActiveScene(
-                            UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(
-                                buildIndex
-                            )
+                            UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path)
                         );
 
                 loadTasks.Add(Task.FromResult(operation));
@@ -143,7 +159,7 @@ namespace CookieUtils.Extras.SceneManager
 
             await Task.WhenAll(loadTasks);
             Debug.Log($"[CookieUtils.Extras.SceneManager] Loaded group {targetGroup.name}");
-            OnGroupLoaded(targetGroup);
+            GroupLoaded(targetGroup);
 
             if (_transition && useTransition)
                 _ = PlayTransitionBackwards();
@@ -176,16 +192,11 @@ namespace CookieUtils.Extras.SceneManager
                 SceneData scene = group.scenes[i];
 
                 if (!scene.reloadIfExists && newGroup != null)
-                    if (
-                        newGroup.scenes.Find(s => scene.scene.BuildIndex == s.scene.BuildIndex)
-                        != null
-                    )
+                    if (newGroup.scenes.Find(s => scene.scene.Path == s.scene.Path) != null)
                         continue;
 
                 AsyncOperation operation =
-                    UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(
-                        scene.scene.BuildIndex
-                    );
+                    UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene.scene.Name);
                 tasks.Add(Task.FromResult(operation));
             }
 
@@ -213,7 +224,7 @@ namespace CookieUtils.Extras.SceneManager
             {
                 Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
 
-                if (scene.buildIndex == _settings.bootstrapScene.BuildIndex)
+                if (scene.path == _settings.bootstrapScene.Path)
                     continue;
 
                 AsyncOperation operation =
@@ -234,10 +245,7 @@ namespace CookieUtils.Extras.SceneManager
 
             for (int i = 0; i < loadedCount; i++)
             {
-                if (
-                    UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).buildIndex
-                    == scene.BuildIndex
-                )
+                if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path == scene.Path)
                     return true;
             }
 

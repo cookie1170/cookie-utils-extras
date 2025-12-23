@@ -9,7 +9,7 @@ namespace CookieUtils.Extras.Juice.Bindings
             if (!didStart)
                 Initialize();
 
-            Play();
+            _ = Play();
         }
     }
 }

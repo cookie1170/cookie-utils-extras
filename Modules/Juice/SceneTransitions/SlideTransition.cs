@@ -14,7 +14,6 @@ namespace CookieUtils.Extras.Juice
         private TweenSettings<float> inSettings = new()
         {
             startFromCurrent = false,
-            startValue = -2200f,
             endValue = 0f,
             settings = new TweenSettings
             {
@@ -30,7 +29,6 @@ namespace CookieUtils.Extras.Juice
         {
             startFromCurrent = true,
             startValue = 0f,
-            endValue = -2200f,
             settings = new TweenSettings
             {
                 useUnscaledTime = true,
@@ -47,15 +45,17 @@ namespace CookieUtils.Extras.Juice
             switch (axis)
             {
                 case SlideAxis.X:
+                    inSettings.startValue = screen.canvas.pixelRect.width * 2;
+                    outSettings.endValue = screen.canvas.pixelRect.width * 2;
                     position.x = outSettings.endValue;
 
                     break;
                 case SlideAxis.Y:
+                    inSettings.startValue = screen.canvas.pixelRect.height * 2;
+                    outSettings.endValue = screen.canvas.pixelRect.height * 2;
                     position.y = outSettings.endValue;
 
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
             screen.rectTransform.localPosition = position;
@@ -80,10 +80,6 @@ namespace CookieUtils.Extras.Juice
 
                     break;
                 }
-                default:
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
             }
 
             PrimeTweenConfig.warnEndValueEqualsCurrent = true;
@@ -105,10 +101,6 @@ namespace CookieUtils.Extras.Juice
                     await Tween.LocalPositionY(screen.rectTransform, outSettings);
 
                     break;
-                }
-                default:
-                {
-                    throw new ArgumentOutOfRangeException();
                 }
             }
 

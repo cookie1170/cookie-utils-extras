@@ -9,9 +9,6 @@ namespace CookieUtils.Extras.Juice
     [PublicAPI]
     public class EffectPlayer : MonoBehaviour
     {
-        private static readonly int ProgressID = Shader.PropertyToID("_Progress");
-        private static readonly int ColorID = Shader.PropertyToID("_Color");
-
         [Tooltip("The effect object to play")]
         public Effect effect;
 
@@ -32,7 +29,7 @@ namespace CookieUtils.Extras.Juice
         protected virtual void Initialize()
         {
             Camera mainCam = Camera.main;
-            _cam = mainCam?.transform;
+            _cam = mainCam ? mainCam.transform : null;
 
             if (!effect)
             {
@@ -53,7 +50,7 @@ namespace CookieUtils.Extras.Juice
         public virtual async Task Play()
         {
             if (!_cam)
-                _cam = Camera.main?.transform;
+                _cam = Camera.main ? Camera.main.transform : null;
 
             if (_cam)
             {

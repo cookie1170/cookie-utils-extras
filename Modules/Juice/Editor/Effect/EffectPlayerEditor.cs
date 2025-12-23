@@ -30,7 +30,7 @@ namespace CookieUtils.Extras.Juice.Editor
 
             previewButton.SetEnabled(EditorApplication.isPlaying);
 
-            previewButton.RegisterCallback<ClickEvent>(_ => player.Play());
+            previewButton.RegisterCallback<ClickEvent>(ev => _ = player.Play());
 
             dataObject.RegisterValueChangeCallback(_ => CheckDataObject());
 

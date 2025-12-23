@@ -549,14 +549,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8655000267818062447, guid: 27fa4563b32661c44a7502bb2762aa46, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1832557850}
+      addedObject: {fileID: 1832557846}
   m_SourcePrefab: {fileID: 100100000, guid: 27fa4563b32661c44a7502bb2762aa46, type: 3}
 --- !u!1 &1832557845 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8655000267818062447, guid: 27fa4563b32661c44a7502bb2762aa46, type: 3}
   m_PrefabInstance: {fileID: 1832557844}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1832557850
+--- !u!114 &1832557846
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -565,17 +565,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1832557845}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 391bd0fe323f87c52b2fa4a25f6a1de1, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e21fabe80a9fd6bb95bec4a87977cbb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: CookieUtils.Extras.Juice::CookieUtils.Extras.Juice.FadeTransition
+  m_EditorClassIdentifier: CookieUtils.Extras.Juice::CookieUtils.Extras.Juice.SlideTransition
   screen: {fileID: 0}
+  axis: 0
   inSettings:
-    startFromCurrent: 1
+    startFromCurrent: 0
     startValue: 0
-    endValue: 1
+    endValue: 0
     settings:
       duration: 0.5
-      ease: 5
+      ease: 6
       customEase:
         serializedVersion: 2
         m_Curve: []
@@ -595,17 +596,17 @@ MonoBehaviour:
     endValue: 0
     settings:
       duration: 0.5
-      ease: 6
+      ease: 5
       customEase:
         serializedVersion: 2
         m_Curve: []
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      cycles: 1
+      cycles: 0
       cycleMode: 0
       startDelay: 0
-      endDelay: 0
+      endDelay: 0.25
       useUnscaledTime: 1
       _useFixedUpdate: 0
       _updateType: 0
@@ -704,6 +705,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
