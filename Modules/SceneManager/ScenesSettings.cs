@@ -14,16 +14,7 @@ namespace CookieUtils.Extras.SceneManager
     [DisableAlchemyEditor]
 #endif
     [PublicAPI]
-    [SettingsObject(
-        "ScenesSettings",
-        "Scenes settings",
-        "Cookie Utils/Scenes",
-        "Scenes",
-        "Cookie Utils",
-        "Scene",
-        "Groups",
-        "Group"
-    )]
+    [SettingsObject("Scenes", "Cookie Utils/Scenes", "Scenes", "Scene", "Groups", "Group")]
     public class ScenesSettings : SettingsObject<ScenesSettings>
     {
         public bool useSceneManager = true;
