@@ -60,7 +60,7 @@ namespace CookieUtils.Extras.SceneManager
                     ActiveGroup = null;
                     _transition = null;
                     _settings = null;
-                    GroupLoaded = null;
+                    GroupLoaded = delegate { };
                 }
             }
 #endif
