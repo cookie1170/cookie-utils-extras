@@ -15,6 +15,11 @@ namespace CookieUtils.Extras.SceneManager
     {
         public string name;
         public List<SceneData> scenes;
+
+        public SceneData FindActiveGroup()
+        {
+            return scenes.Find(s => s.type == SceneType.Active);
+        }
     }
 
     [Serializable]
@@ -25,6 +30,11 @@ namespace CookieUtils.Extras.SceneManager
     {
         public string name;
         public SceneGroup Group => ScenesSettings.Get().FindSceneGroupFromName(name);
+
+        public static implicit operator SceneGroup(SceneGroupReference groupRef)
+        {
+            return groupRef.Group;
+        }
     }
 
     [Serializable]

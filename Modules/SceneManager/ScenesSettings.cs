@@ -18,6 +18,7 @@ namespace CookieUtils.Extras.SceneManager
     public class ScenesSettings : SettingsObject<ScenesSettings>
     {
         public bool useSceneManager = true;
+        public LogLevel logLevel = LogLevel.Info;
         public SceneGroupReference startingGroup;
         public SceneReference bootstrapScene;
         public List<SceneGroup> groups;
@@ -81,5 +82,14 @@ namespace CookieUtils.Extras.SceneManager
         [SettingsProvider]
         private static SettingsProvider ProvideSettings() => GetSettings();
 #endif
+    }
+
+    public enum LogLevel
+    {
+        Trace,
+        Info,
+        Warning,
+        Error,
+        None,
     }
 }
