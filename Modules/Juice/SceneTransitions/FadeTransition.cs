@@ -34,8 +34,6 @@ namespace CookieUtils.Extras.Juice
             },
         };
 
-        public override IProgress<float> Progress => null;
-
         protected override void Awake()
         {
             base.Awake();
