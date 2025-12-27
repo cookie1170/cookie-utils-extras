@@ -10,10 +10,10 @@ namespace CookieUtils.Extras.Juice
         private static readonly int TransitionTexture = Shader.PropertyToID("_TransitionTexture");
 
         [SerializeField]
-        private Texture2D inTexture;
+        private Texture2D showTexture;
 
         [SerializeField]
-        private Texture2D outTexture;
+        private Texture2D hideTexture;
 
         [SerializeField]
         private Vector2 tiling = Vector2.one;
@@ -22,7 +22,7 @@ namespace CookieUtils.Extras.Juice
         private Vector2 offset;
 
         [SerializeField]
-        private TweenSettings<float> inSettings = new()
+        private TweenSettings<float> showSettings = new()
         {
             startFromCurrent = true,
             endValue = 1f,
@@ -30,13 +30,12 @@ namespace CookieUtils.Extras.Juice
             {
                 useUnscaledTime = true,
                 duration = 0.5f,
-                endDelay = 0.25f,
                 ease = Ease.OutQuad,
             },
         };
 
         [SerializeField]
-        private TweenSettings<float> outSettings = new()
+        private TweenSettings<float> hideSettings = new()
         {
             startFromCurrent = true,
             endValue = 0f,
@@ -57,29 +56,55 @@ namespace CookieUtils.Extras.Juice
         protected override void Awake()
         {
             base.Awake();
-            screen.material = material;
-            screen.material.SetFloat(TransitionProgress, 0);
-            screen.material.SetTextureOffset(TransitionTexture, offset);
-            screen.material.SetTextureScale(TransitionTexture, tiling);
-            screen.enabled = false;
+            Screen.material = material;
+            Screen.material.SetFloat(TransitionProgress, 0);
+            Screen.material.SetTextureOffset(TransitionTexture, offset);
+            Screen.material.SetTextureScale(TransitionTexture, tiling);
+            Screen.enabled = false;
         }
 
-        public override async Task PlayForwards()
+        protected override async Task OnShow()
         {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
-            screen.enabled = true;
-            screen.material.SetTexture(TransitionTexture, inTexture);
-            await Tween.MaterialProperty(screen.material, TransitionProgress, inSettings);
+            Screen.enabled = true;
+            Screen.material.SetTexture(TransitionTexture, showTexture);
+
+            await Sequence
+                .Create(useUnscaledTime: true)
+                .Chain(Tween.MaterialProperty(Screen.material, TransitionProgress, showSettings))
+                .Insert(showSettings.settings.duration * 0.5f, ShowProgressBar());
+
             PrimeTweenConfig.warnEndValueEqualsCurrent = true;
         }
 
-        public override async Task PlayBackwards()
+        protected override async Task OnHide()
         {
             PrimeTweenConfig.warnEndValueEqualsCurrent = false;
-            screen.material.SetTexture(TransitionTexture, outTexture);
-            await Tween.MaterialProperty(screen.material, TransitionProgress, outSettings);
-            screen.enabled = false;
+            Screen.material.SetTexture(TransitionTexture, hideTexture);
+
+            await Sequence
+                .Create(useUnscaledTime: true)
+                .Chain(HideProgressBar())
+                .Chain(Tween.MaterialProperty(Screen.material, TransitionProgress, hideSettings));
+
+            Screen.enabled = false;
             PrimeTweenConfig.warnEndValueEqualsCurrent = true;
+        }
+
+        public override void ShowImmediately()
+        {
+            ShowProgressBarImmediately();
+
+            Screen.enabled = true;
+            Screen.material.SetFloat(TransitionProgress, showSettings.endValue);
+        }
+
+        public override void HideImmediately()
+        {
+            HideProgressBarImmediately();
+
+            Screen.material.SetFloat(TransitionProgress, hideSettings.endValue);
+            Screen.enabled = false;
         }
     }
 }

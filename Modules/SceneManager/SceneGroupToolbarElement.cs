@@ -13,7 +13,8 @@ namespace CookieUtils.Extras.SceneManager
         public SceneGroup selectedGroup = null;
         public SceneGroupSelection selectedState = SceneGroupSelection.Auto;
 
-        const string path = "Cookie Utils/Scene Group";
+        private const string path = "Cookie Utils/Scene Group";
+        private const string IconName = "UnityLogo";
 
         private void OnEnable()
         {
@@ -70,15 +71,13 @@ namespace CookieUtils.Extras.SceneManager
                 menu.AddItem(
                     new GUIContent(group.name),
                     false,
-                    () =>
+                    async () =>
                     {
                         if (Application.isPlaying)
                         {
-                            /*
-                            for some reason the first half of the transition doesn't play when we change it through here
-                            so we just turn the transition off
-                            */
-                            Scenes.LoadGroup(group, false);
+                            // the first half of the transition doesn't play without the next frame wait
+                            await Awaitable.NextFrameAsync();
+                            await Scenes.LoadGroupAsync(group);
                             return;
                         }
 
@@ -113,7 +112,7 @@ namespace CookieUtils.Extras.SceneManager
 
             label ??= "None";
 
-            Texture2D icon = EditorGUIUtility.IconContent("UnityLogo").image as Texture2D;
+            Texture2D icon = EditorGUIUtility.IconContent(IconName).image as Texture2D;
             MainToolbarContent content = new(label, icon, "Select active scene group");
 
             return content;

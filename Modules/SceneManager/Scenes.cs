@@ -21,6 +21,8 @@ namespace CookieUtils.Extras.SceneManager
     [PublicAPI]
     public static class Scenes
     {
+        private const float UnloadTimeProportion = 0.25f;
+
         private static ScenesSettings _settings;
         private static SceneTransition _transition;
 
@@ -37,6 +39,7 @@ namespace CookieUtils.Extras.SceneManager
         }
 
         public static SceneGroup ActiveGroup { get; private set; }
+        public static event Action<SceneGroup, SceneGroup> GroupLoadingStarted = delegate { };
         public static event Action<SceneGroup, SceneGroup> GroupLoaded = delegate { };
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
@@ -50,6 +53,8 @@ namespace CookieUtils.Extras.SceneManager
 
             SceneGroup startingGroup = null;
 #if UNITY_EDITOR
+            InitializeEditorCleanup();
+
             startingGroup = GetEditorStartingGroup();
 
             startingGroup ??= Settings.startingGroup.Group;
@@ -73,19 +78,20 @@ namespace CookieUtils.Extras.SceneManager
                     LogInfo("Bootstrap scene is already loaded, skipping");
 
                 FindSceneTransition();
+                ShowTransitionImmediately();
             }
             else
                 LogTrace("Bootstrap scene is empty, not loading");
 
             if (startingGroup != null)
-                await LoadGroupAsync(startingGroup, false);
-
-#if UNITY_EDITOR
-            InitializeEditorCleanup();
-#endif
+                _ = LoadGroupAsync(startingGroup, false, true);
         }
 
-        public static async Task LoadGroupAsync(SceneGroup targetGroup, bool useTransition = true)
+        public static async Task LoadGroupAsync(
+            SceneGroup targetGroup,
+            bool useTransitionIn = true,
+            bool useTransitionOut = true
+        )
         {
             if (!Settings.useSceneManager)
             {
@@ -96,40 +102,59 @@ namespace CookieUtils.Extras.SceneManager
                 return;
             }
 
-            SceneGroup oldGroup = ActiveGroup;
+            GroupLoadingStarted?.Invoke(ActiveGroup, targetGroup);
 
-            if (_transition && useTransition)
+            SceneGroup oldGroup = ActiveGroup;
+            UpdateProgressBar(0);
+
+            if (_transition && useTransitionIn)
             {
-                LogTrace("Transition exists and used, playing");
-                await PlayTransitionForwards();
+                LogTrace("Transition exists and used in, showing");
+                await ShowTransition();
             }
+
             if (ActiveGroup != null)
             {
                 LogTrace($"Unloading current active group: '{ActiveGroup.name}'");
+
                 await UnloadSceneGroup(ActiveGroup, targetGroup);
             }
 
+            await LoadGroupScenes(targetGroup);
+
             ActiveGroup = targetGroup;
 
-            List<Task> loadTasks = new();
+            LogInfo($"Loaded group '{targetGroup.name}'");
+            GroupLoaded?.Invoke(targetGroup, oldGroup);
+
+            if (_transition && useTransitionOut)
+            {
+                LogTrace("Transition exists and is used out, hiding");
+                _ = HideTransition();
+            }
+        }
+
+        private static async Task LoadGroupScenes(SceneGroup targetGroup)
+        {
+            AsyncOperationGroup loadGroup = new();
 
             foreach (SceneData scene in targetGroup.scenes)
             {
-                if (LoadScene(scene, out Task task))
-                    loadTasks.Add(task);
+                if (LoadScene(scene, out AsyncOperation operation))
+                    loadGroup.Add(operation);
             }
 
-            await Task.WhenAll(loadTasks);
-            LogInfo($"Loaded group '{targetGroup.name}'");
-            GroupLoaded(targetGroup, oldGroup);
-
-            if (_transition && useTransition)
-                _ = PlayTransitionBackwards();
+            await WaitForGroup(
+                loadGroup,
+                ActiveGroup != null
+                    ? (p) => p * (1 - UnloadTimeProportion) + UnloadTimeProportion
+                    : null
+            );
         }
 
-        private static bool LoadScene(SceneData scene, out Task task)
+        private static bool LoadScene(SceneData scene, out AsyncOperation operation)
         {
-            task = null;
+            operation = null;
 
             if (scene == null)
                 return false;
@@ -142,7 +167,7 @@ namespace CookieUtils.Extras.SceneManager
                 return false;
             }
 
-            AsyncOperation operation = UnityScenes.LoadSceneAsync(name, LoadSceneMode.Additive);
+            operation = UnityScenes.LoadSceneAsync(name, LoadSceneMode.Additive);
 
             if (operation == null)
             {
@@ -167,7 +192,6 @@ namespace CookieUtils.Extras.SceneManager
                     UnityScenes.SetActiveScene(UnityScenes.GetSceneByName(name));
                 };
 
-            task = Task.FromResult(operation);
             return true;
         }
 
@@ -191,24 +215,41 @@ namespace CookieUtils.Extras.SceneManager
             int count = group.scenes.Count;
             LogTrace($"Group '{group.name}' contains {count} scenes");
 
-            List<Task> tasks = new();
+            await UnloadGroupScenes(group, newGroup, count);
+
+            LogInfo($"Unloaded group '{group.name}'");
+        }
+
+        private static async Task UnloadGroupScenes(
+            SceneGroup group,
+            SceneGroup newGroup,
+            int count
+        )
+        {
+            AsyncOperationGroup unloadGroup = new();
 
             for (int i = 0; i < count; i++)
             {
                 SceneData scene = group.scenes[i];
                 LogTrace($"Trying to unload scene '{scene.Name}' with index {i}");
 
-                if (UnloadScene(newGroup, scene, out Task task))
-                    tasks.Add(task);
+                if (UnloadScene(newGroup, scene, out AsyncOperation operation))
+                    unloadGroup.Add(operation);
             }
 
-            await Task.WhenAll(tasks);
-            LogInfo($"Unloaded group '{group.name}'");
+            await WaitForGroup(
+                unloadGroup,
+                (p) => p * (newGroup != null ? UnloadTimeProportion : 1f)
+            );
         }
 
-        private static bool UnloadScene(SceneGroup newGroup, SceneData scene, out Task task)
+        private static bool UnloadScene(
+            SceneGroup newGroup,
+            SceneData scene,
+            out AsyncOperation operation
+        )
         {
-            task = null;
+            operation = null;
 
             if (!scene.reloadIfExists && newGroup != null)
             {
@@ -224,22 +265,78 @@ namespace CookieUtils.Extras.SceneManager
             }
 
             LogTrace($"Unloading scene '{scene.Name}'");
-            AsyncOperation operation = UnityScenes.UnloadSceneAsync(scene.scene.Name);
-            task = Task.FromResult(operation);
+            operation = UnityScenes.UnloadSceneAsync(scene.scene.Name);
 
             return true;
         }
 
-        public static Task PlayTransitionForwards()
+        private static async Task WaitForGroup(
+            AsyncOperationGroup loadGroup,
+            Func<float, float> transform = null
+        )
         {
-            LogTrace("Playing transition forwards");
-            return _transition.PlayForwards();
+            transform ??= (v) => v;
+
+            float progress;
+
+            while ((progress = loadGroup.GetProgress()) < 1 - Mathf.Epsilon)
+            {
+                UpdateProgressBar(transform(progress));
+                await Awaitable.NextFrameAsync();
+            }
+
+            UpdateProgressBar(transform(progress));
         }
 
-        public static Task PlayTransitionBackwards()
+        private static void UpdateProgressBar(float value)
         {
-            LogTrace("Playing transition backwards");
-            return _transition.PlayBackwards();
+            if (!_transition)
+                return;
+
+            if (_transition.Progress == null)
+            {
+                LogTrace("Transition progress is null, skipping");
+                return;
+            }
+
+            LogTrace($"Updating progress to {value}");
+            _transition.Progress.Report(value);
+        }
+
+        public static async Task ShowTransition()
+        {
+            if (!_transition)
+                return;
+
+            LogTrace("Showing transition");
+            await _transition.Show();
+        }
+
+        public static async Task HideTransition()
+        {
+            if (!_transition)
+                return;
+
+            LogTrace("Hiding transition");
+            await _transition.Hide();
+        }
+
+        public static void ShowTransitionImmediately()
+        {
+            if (!_transition)
+                return;
+
+            LogTrace("Showing transition immediately");
+            _transition.ShowImmediately();
+        }
+
+        public static void HideTransitionImmediately()
+        {
+            if (!_transition)
+                return;
+
+            LogTrace("Hiding transition immediately");
+            _transition.HideImmediately();
         }
 
         public static async Task UnloadAllScenes()
@@ -269,7 +366,7 @@ namespace CookieUtils.Extras.SceneManager
 
                 AsyncOperation operation = UnityScenes.UnloadSceneAsync(scene);
                 unloadedScenes++;
-                tasks.Add(Task.FromResult(operation));
+                tasks.Add(operation.AsTask());
             }
 
             await Task.WhenAll(tasks);
@@ -296,17 +393,40 @@ namespace CookieUtils.Extras.SceneManager
 #endif
         public static void LoadGroup(string groupName, bool useTransition = true)
         {
-            _ = LoadGroupAsync(groupName, useTransition);
+            _ = LoadGroupAsync(groupName, useTransition, useTransition);
         }
 
         public static void LoadGroup(SceneGroupReference group, bool useTransition = true)
         {
-            _ = LoadGroupAsync(group.Group, useTransition);
+            _ = LoadGroupAsync(group.Group, useTransition, useTransition);
         }
 
         public static void LoadGroup(SceneGroup targetGroup, bool useTransition = true)
         {
-            _ = LoadGroupAsync(targetGroup, useTransition);
+            _ = LoadGroupAsync(targetGroup, useTransition, useTransition);
+        }
+
+        public static void LoadGroup(string groupName, bool useTransitionIn, bool useTransitionOut)
+        {
+            _ = LoadGroupAsync(groupName, useTransitionIn, useTransitionOut);
+        }
+
+        public static void LoadGroup(
+            SceneGroupReference group,
+            bool useTransitionIn,
+            bool useTransitionOut
+        )
+        {
+            _ = LoadGroupAsync(group.Group, useTransitionIn, useTransitionOut);
+        }
+
+        public static void LoadGroup(
+            SceneGroup targetGroup,
+            bool useTransitionIn,
+            bool useTransitionOut
+        )
+        {
+            _ = LoadGroupAsync(targetGroup, useTransitionIn, useTransitionOut);
         }
 
         public static async Task LoadGroupAsync(string groupName)
@@ -318,7 +438,18 @@ namespace CookieUtils.Extras.SceneManager
         {
             SceneGroup targetGroup = Settings.FindSceneGroupFromName(groupName);
 
-            await LoadGroupAsync(targetGroup, useTransition);
+            await LoadGroupAsync(targetGroup, useTransition, useTransition);
+        }
+
+        public static async Task LoadGroupAsync(
+            string groupName,
+            bool useTransitionIn,
+            bool useTransitionOut
+        )
+        {
+            SceneGroup targetGroup = Settings.FindSceneGroupFromName(groupName);
+
+            await LoadGroupAsync(targetGroup, useTransitionIn, useTransitionOut);
         }
 
         public static async Task LoadGroupAsync(
@@ -326,7 +457,16 @@ namespace CookieUtils.Extras.SceneManager
             bool useTransition = true
         )
         {
-            await LoadGroupAsync(group.Group, useTransition);
+            await LoadGroupAsync(group.Group, useTransition, useTransition);
+        }
+
+        public static async Task LoadGroupAsync(
+            SceneGroupReference group,
+            bool useTransitionIn,
+            bool useTransitionOut
+        )
+        {
+            await LoadGroupAsync(group.Group, useTransitionIn, useTransitionOut);
         }
 
         private static async Task LoadBootstrapScene()
@@ -422,6 +562,7 @@ namespace CookieUtils.Extras.SceneManager
                     _transition = null;
                     _settings = null;
                     GroupLoaded = delegate { };
+                    GroupLoadingStarted = delegate { };
                 }
             }
         }

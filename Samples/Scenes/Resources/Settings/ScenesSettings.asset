@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f10cb85b73d442209f827fd2b0c20353, type: 3}
+  m_Name: ScenesSettings
+  m_EditorClassIdentifier: CookieUtils.Extras.Scenes::CookieUtils.Extras.Scenes.ScenesData
+  useSceneManager: 1
+  logLevel: 1
+  startingGroup:
+    name: LevelOne
+  bootstrapScene:
+    asset: {fileID: 102900000, guid: 316b801692cc1aa99b7f5e11d4aada98, type: 3}
+    guid: 316b801692cc1aa99b7f5e11d4aada98
+  groups:
+  - name: LevelOne
+    scenes:
+    - scene:
+        asset: {fileID: 102900000, guid: 666db8a591b33a7beab72bd52639cf0d, type: 3}
+        guid: 666db8a591b33a7beab72bd52639cf0d
+      type: 0
+      reloadIfExists: 0
+    - scene:
+        asset: {fileID: 102900000, guid: 935faffc08e67306fbba88b36e6e987e, type: 3}
+        guid: 935faffc08e67306fbba88b36e6e987e
+      type: 4
+      reloadIfExists: 0
+  - name: LevelTwo
+    scenes:
+    - scene:
+        asset: {fileID: 102900000, guid: 695b1aaeb221c02398ac3fb5ad01c3a0, type: 3}
+        guid: 695b1aaeb221c02398ac3fb5ad01c3a0
+      type: 0
+      reloadIfExists: 0
+    - scene:
+        asset: {fileID: 102900000, guid: c7398dce4fca8115983babbb7a6a4740, type: 3}
+        guid: c7398dce4fca8115983babbb7a6a4740
+      type: 4
+      reloadIfExists: 0
+    - scene:
+        asset: {fileID: 102900000, guid: 935faffc08e67306fbba88b36e6e987e, type: 3}
+        guid: 935faffc08e67306fbba88b36e6e987e
+      type: 4
+      reloadIfExists: 0
