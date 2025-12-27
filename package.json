@@ -15,12 +15,12 @@
 		{
 			"displayName": "Effect",
 			"description": "A sample showing how the Effect class can be used for game juice",
-			"path": "Samples/Effect"
+			"path": "Samples~/Effect"
 		},
 		{
 			"displayName": "Scene manager",
 			"description": "A sample showing features that the scene manager has",
-			"path": "Samples/Scenes"
+			"path": "Samples~/Scenes"
 		}
 	]
 }
