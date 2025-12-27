@@ -121,6 +121,10 @@ namespace CookieUtils.Extras.SceneManager
         private static void OnPlayModeStateChanged(PlayModeStateChange change)
         {
             MainToolbar.Refresh(path);
+
+            // make double sure we're subscribed to this
+            Scenes.GroupLoaded -= OnGroupLoaded;
+            Scenes.GroupLoaded += OnGroupLoaded;
         }
 
         private static void OnGroupLoaded(SceneGroup group, SceneGroup old)
