@@ -241,6 +241,9 @@ namespace CookieUtils.Extras.SceneManager
                 unloadGroup,
                 (p) => p * (newGroup != null ? UnloadTimeProportion : 1f)
             );
+
+            LogTrace("Unloading unused assets");
+            await Resources.UnloadUnusedAssets();
         }
 
         private static bool UnloadScene(
@@ -391,6 +394,11 @@ namespace CookieUtils.Extras.SceneManager
 #if DEBUG_CONSOLE
         [ConsoleMethod("load", "Loads the specified scene group")]
 #endif
+        public static void LoadGroup(string groupName)
+        {
+            _ = LoadGroupAsync(groupName, true, true);
+        }
+
         public static void LoadGroup(string groupName, bool useTransition = true)
         {
             _ = LoadGroupAsync(groupName, useTransition, useTransition);

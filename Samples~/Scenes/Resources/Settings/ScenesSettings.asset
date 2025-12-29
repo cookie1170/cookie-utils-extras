@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10cb85b73d442209f827fd2b0c20353, type: 3}
   m_Name: ScenesSettings
   m_EditorClassIdentifier: CookieUtils.Extras.Scenes::CookieUtils.Extras.Scenes.ScenesData
-  useSceneManager: 1
+  useSceneManager: 0
   logLevel: 1
   startingGroup:
     name: LevelOne
