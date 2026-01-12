@@ -10,7 +10,7 @@
         </ui:Foldout>
     </ui:VisualElement>
     <ui:VisualElement name="DataPanel" class="panel" style="flex-grow: 1;">
-        <ui:Foldout text="Data&#10;" name="Data" view-data-key="Data" class="title">
+        <ui:Foldout text="Data" name="Data" view-data-key="Data" class="title">
             <uie:PropertyField name="DataObject" binding-path="effect" label="Effect"/>
         </ui:Foldout>
     </ui:VisualElement>
